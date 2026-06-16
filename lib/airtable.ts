@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // Capa de acceso a Airtable.
 // La API REST de Airtable devuelve campos por NOMBRE en r.fields, no por field ID.
 
