@@ -4,7 +4,18 @@ import { getResumen } from "@/lib/airtable";
 export const revalidate = 60;
 
 export default async function DashboardPage() {
-  const resumen = await getResumen();
+  let resumen = {
+    totalEmpresas: 0,
+    totalContactos: 0,
+    leadsNuevos: 0,
+    leadsValidados: 0,
+  };
+
+  try {
+    resumen = await getResumen();
+  } catch (e) {
+    console.error("Error cargando resumen:", e);
+  }
 
   const CARDS = [
     { label: "Total empresas", value: resumen.totalEmpresas },
@@ -17,7 +28,6 @@ export default async function DashboardPage() {
     <div className="space-y-8">
       <h1 className="text-2xl font-bold text-ink">Dashboard — ProspectOS</h1>
 
-      {/* KPIs */}
       <section className="rounded-lg border border-line bg-card p-6">
         <div className="grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-3 lg:grid-cols-5">
           {CARDS.map((card) => (
@@ -29,7 +39,6 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* Accesos rápidos */}
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {[
           { href: "/contactos", label: "👥 Ver contactos", desc: `${resumen.totalContactos} contactos importados` },
