@@ -3,8 +3,8 @@ import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 
 export const metadata: Metadata = {
-  title: "ProspectOS · IA a Medida",
-  description: "Dashboard de captación B2B",
+  title: "Nexe · Captación B2B",
+  description: "Sistema de captación de leads B2B — Nexe Digital",
 };
 
 export const viewport: Viewport = {

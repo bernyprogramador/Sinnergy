@@ -9,24 +9,27 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Paleta Nexe — "Obsidian Precision" (Dark Premium, DESIGN.md)
-        base: "#0a0a0a", // fondo principal (negro profundo)
-        mint: "#00d4aa", // acento verde / CTA
-        minttext: "#00d4aa", // acento verde para texto
-        ink: "#ffffff", // texto principal
-        card: "#111111", // fondo de cards (nivel 1)
-        panel: "#111111", // fondo de cards/filas destacadas
-        rowalt: "#141414", // fila alterna de tabla
-        thead: "#161616", // cabecera de tabla (nivel 2)
-        line: "#1f1f1f", // bordes finos
-        muted: "#8a8a8a", // texto secundario / metadatos
-        sidebar: "#111111", // fondo del sidebar
-        sidemuted: "#8a8a8a", // texto secundario del sidebar
-        danger: "#e74c3c", // alertas críticas
-        warn: "#f39c12", // avisos
+        // Paleta Nexe — matching nexedigital.es
+        base: "#0d1412",     // fondo principal — negro con tinte verde oscuro
+        mint: "#2be8a4",     // verde brillante Nexe (acento principal)
+        mintdark: "#1db87e", // verde más oscuro para hover
+        ink: "#ffffff",      // texto principal
+        card: "#131f1a",     // fondo cards
+        panel: "#0f1a16",    // fondo panels
+        rowalt: "#151f1b",   // fila alterna
+        thead: "#0d1714",    // cabecera tabla
+        line: "#1e2e28",     // bordes
+        muted: "#7a9088",    // texto secundario
+        sidebar: "#0b1210",  // sidebar más oscuro
+        sidemuted: "#6a8078",// texto sidebar secundario
+        danger: "#e74c3c",
+        warn: "#f39c12",
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
+      },
+      borderRadius: {
+        DEFAULT: "0.5rem",
       },
     },
   },

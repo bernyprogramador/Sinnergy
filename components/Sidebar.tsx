@@ -5,31 +5,33 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LINKS = [
-  { href: "/", label: "Dashboard", icon: "📊" },
-  { href: "/empresas", label: "Empresas", icon: "🏢" },
-  { href: "/contactos", label: "Contactos", icon: "👥" },
-  { href: "/cola", label: "Pipeline", icon: "🎯" },
-  { href: "/campanas", label: "Campañas", icon: "🚀" },
-  { href: "/oportunidades", label: "Oportunidades", icon: "🎯" },
+  { href: "/", label: "Dashboard", icon: "▣" },
+  { href: "/contactos", label: "Contactos", icon: "◎" },
+  { href: "/cola", label: "Pipeline", icon: "→" },
+  { href: "/empresas", label: "Empresas", icon: "◈" },
+  { href: "/campanas", label: "Campañas", icon: "◆" },
+  { href: "/oportunidades", label: "Oportunidades", icon: "◉" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex w-60 shrink-0 flex-col border-r border-line bg-sidebar">
-      <div className="px-5 pb-6 pt-8">
-        <Image
-          src="/logo-nexe.png"
-          alt="Nexe · IA a Medida"
-          width={1024}
-          height={338}
-          className="h-auto w-40 brightness-0 invert"
-          priority
-        />
-        <p className="mt-4 text-sm font-bold text-white">ProspectOS</p>
+    <aside className="flex w-56 shrink-0 flex-col border-r border-line bg-sidebar">
+      <div className="px-5 pt-7 pb-5 border-b border-line">
+        <div className="flex items-center gap-2">
+          <div className="h-7 w-7 rounded-lg bg-mint flex items-center justify-center">
+            <span className="text-xs font-black text-black">N</span>
+          </div>
+          <span className="text-white font-bold text-lg tracking-tight">nexe</span>
+        </div>
+        <div className="mt-3 flex items-center gap-2">
+          <span className="h-1.5 w-1.5 rounded-full bg-mint" />
+          <p className="text-xs text-mint font-medium tracking-wider uppercase">Captación B2B</p>
+        </div>
       </div>
-      <nav className="flex-1 px-3">
+
+      <nav className="flex-1 px-3 py-4 space-y-0.5">
         {LINKS.map((link) => {
           const active =
             link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
@@ -37,19 +39,28 @@ export default function Sidebar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`mb-1 flex items-center gap-2.5 rounded px-3 py-2.5 text-sm transition-colors ${
+              className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-150 ${
                 active
-                  ? "bg-mint/10 font-medium text-mint"
-                  : "text-sidemuted hover:bg-white/5 hover:text-white"
+                  ? "bg-mint/10 text-mint font-semibold border border-mint/25"
+                  : "text-sidemuted hover:bg-white/5 hover:text-white border border-transparent"
               }`}
             >
-              <span>{link.icon}</span>
+              <span className={`text-sm ${active ? "text-mint" : "text-sidemuted group-hover:text-mint"}`}>
+                {link.icon}
+              </span>
               {link.label}
+              {active && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-mint" />}
             </Link>
           );
         })}
       </nav>
-      <div className="px-5 py-4 text-xs text-sidemuted">Conectado a Airtable · live</div>
+
+      <div className="px-4 py-4 border-t border-line">
+        <div className="flex items-center gap-2 text-xs text-sidemuted">
+          <span className="h-1.5 w-1.5 rounded-full bg-mint animate-pulse" />
+          Airtable · en vivo
+        </div>
+      </div>
     </aside>
   );
 }

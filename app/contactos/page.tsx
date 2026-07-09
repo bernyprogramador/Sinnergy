@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getContactosConEmpresa, type Contacto } from "@/lib/airtable";
 import StatusBadge from "@/components/StatusBadge";
 
@@ -57,6 +58,9 @@ export default async function ContactosPage() {
               <th className="px-4 py-3">Empresa</th>
               <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">Estado</th>
+              <th className="px-4 py-3">Fecha email</th>
+              <th className="px-4 py-3">Asunto</th>
+              <th className="px-4 py-3">Notas</th>
               <th className="px-4 py-3">LinkedIn</th>
             </tr>
           </thead>
@@ -78,9 +82,30 @@ export default async function ContactosPage() {
                     <td className="px-4 py-3 font-medium text-white">{c.nombre}</td>
                     <td className="px-4 py-3 text-muted">{c.cargo}</td>
                     <td className="px-4 py-3 text-muted">{c.empresa}</td>
-                    <td className="px-4 py-3 text-muted">{c.email}</td>
+                    <td className="px-4 py-3">
+                      {c.email && c.email !== "—" ? (
+                        <Link
+                          href={`/contactos/${c.id}`}
+                          className="text-mint hover:underline text-sm font-mono"
+                          title="Abrir editor de email"
+                        >
+                          {c.email}
+                        </Link>
+                      ) : (
+                        <span className="text-muted/40">—</span>
+                      )}
+                    </td>
                     <td className="px-4 py-3">
                       <StatusBadge status={c.estadoContacto} />
+                    </td>
+                    <td className="px-4 py-3 text-muted text-xs">
+                      {c.fechaEmailEnviado || "—"}
+                    </td>
+                    <td className="px-4 py-3 text-muted text-xs max-w-[180px] truncate">
+                      {c.asuntoEmail || "—"}
+                    </td>
+                    <td className="px-4 py-3 text-muted text-xs max-w-[180px] truncate">
+                      {c.notasSeguimiento || "—"}
                     </td>
                     <td className="px-4 py-3">
                       {c.linkedin ? (

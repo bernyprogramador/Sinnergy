@@ -44,6 +44,10 @@ export type Contacto = {
   linkedin: string;
   empresa: string;
   empresaId: string;
+  fechaEmailEnviado: string;
+  asuntoEmail: string;
+  notasSeguimiento: string;
+  borradorEmail: string;
 };
 
 export type Campana = {
@@ -166,6 +170,10 @@ export async function getContactos(): Promise<Contacto[]> {
       linkedin: f["LinkedIn"] ?? f["Linkedin"] ?? "",
       empresa: empresaNombre,
       empresaId,
+      fechaEmailEnviado: f["Fecha email enviado"] ?? "",
+      asuntoEmail: f["Asunto email"] ?? "",
+      notasSeguimiento: f["Notas seguimiento"] ?? "",
+      borradorEmail: f["Borrador email"] ?? "",
     };
   });
 }
