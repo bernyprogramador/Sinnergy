@@ -46,9 +46,9 @@ export default async function DashboardPage() {
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[
             { href: "/contactos", label: "Contactos", desc: `${resumen.totalContactos} importados`, icon: "◎", color: "hover:border-mint/40" },
-            { href: "/cola", label: "Pipeline", desc: "Seguimiento del funnel", icon: "→", color: "hover:border-mint/40" },
+            { href: "/cola", label: "Cola de aprobación", desc: "Revisar y enviar emails", icon: "→", color: "hover:border-mint/40" },
             { href: "/empresas", label: "Empresas", desc: "Base de datos", icon: "◈", color: "hover:border-mint/40" },
-            { href: "/oportunidades", label: "Oportunidades", desc: "Reuniones acordadas", icon: "◉", color: "hover:border-mint/40" },
+            { href: "/campanas", label: "Campañas", desc: "Seguimiento de campañas", icon: "◆", color: "hover:border-mint/40" },
           ].map((item) => (
             <Link
               key={item.href}

@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 const LINKS = [
   { href: "/", label: "Dashboard", icon: "▣" },
   { href: "/contactos", label: "Contactos", icon: "◎" },
-  { href: "/cola", label: "Pipeline", icon: "→" },
+  { href: "/cola", label: "Cola", icon: "→" },
   { href: "/empresas", label: "Empresas", icon: "◈" },
   { href: "/campanas", label: "Campañas", icon: "◆" },
 ];
@@ -19,7 +19,7 @@ export default function Sidebar() {
     <aside className="flex w-56 shrink-0 flex-col border-r border-line bg-sidebar">
       <div className="px-5 pt-7 pb-5 border-b border-line">
         <div className="flex items-center">
-          <img src="/logo-nexe.png" alt="Nexe" width={90} height={30} />
+          <img src="/logo-nexe.png" alt="Nexe Digital" width={110} height={36} style={{objectFit:"contain"}} />
         </div>
         <div className="mt-3 flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-mint" />
