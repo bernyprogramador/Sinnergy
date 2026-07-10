@@ -10,7 +10,6 @@ const LINKS = [
   { href: "/cola", label: "Pipeline", icon: "→" },
   { href: "/empresas", label: "Empresas", icon: "◈" },
   { href: "/campanas", label: "Campañas", icon: "◆" },
-  { href: "/oportunidades", label: "Oportunidades", icon: "◉" },
 ];
 
 export default function Sidebar() {
@@ -58,9 +57,4 @@ export default function Sidebar() {
       <div className="px-4 py-4 border-t border-line">
         <div className="flex items-center gap-2 text-xs text-sidemuted">
           <span className="h-1.5 w-1.5 rounded-full bg-mint animate-pulse" />
-          Airtable · en vivo
-        </div>
-      </div>
-    </aside>
-  );
-}
+          Airtable

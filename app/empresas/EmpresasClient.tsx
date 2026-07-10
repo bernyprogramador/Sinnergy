@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import type { Empresa, Contacto } from "@/lib/airtable";
 import StatusBadge from "@/components/StatusBadge";
 
@@ -27,6 +28,7 @@ export default function EmpresasClient({
   contactos: Contacto[];
 }) {
   const [selected, setSelected] = useState<Empresa | null>(null);
+  const router = useRouter();
 
   const contactosDeEmpresa = selected
     ? contactos.filter((c) => c.empresaId === selected.id)
@@ -145,19 +147,29 @@ export default function EmpresasClient({
                 {contactosDeEmpresa.map((c) => (
                   <div
                     key={c.id}
-                    className="flex items-center gap-3 rounded-lg bg-base border border-line p-3"
+                    className="rounded-lg bg-base border border-line p-3 space-y-2"
                   >
-                    <div className="h-7 w-7 rounded-full bg-mint/15 flex items-center justify-center shrink-0">
-                      <span className="text-mint text-xs font-bold">{initials(c.nombre)}</span>
+                    <div className="flex items-center gap-3">
+                      <div className="h-7 w-7 rounded-full bg-mint/15 flex items-center justify-center shrink-0">
+                        <span className="text-mint text-xs font-bold">{initials(c.nombre)}</span>
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-white text-xs font-semibold truncate">{c.nombre}</p>
+                        <p className="text-muted text-xs truncate">{c.cargo}</p>
+                      </div>
+                      {c.decisor === "Sí" && (
+                        <span className="text-xs bg-mint/10 text-mint px-1.5 py-0.5 rounded shrink-0">
+                          Decisor
+                        </span>
+                      )}
                     </div>
-                    <div className="min-w-0">
-                      <p className="text-white text-xs font-semibold truncate">{c.nombre}</p>
-                      <p className="text-muted text-xs truncate">{c.cargo} · {c.email}</p>
-                    </div>
-                    {c.decisor === "Sí" && (
-                      <span className="ml-auto text-xs bg-mint/10 text-mint px-1.5 py-0.5 rounded shrink-0">
-                        Decisor
-                      </span>
+                    {c.email && c.email !== "—" && (
+                      <button
+                        onClick={() => router.push(`/contactos/${c.id}`)}
+                        className="w-full text-xs bg-mint/10 hover:bg-mint/20 text-mint border border-mint/20 rounded-lg py-1.5 transition-colors font-medium"
+                      >
+                        ✉ Redactar email
+                      </button>
                     )}
                   </div>
                 ))}

@@ -49,19 +49,16 @@ export default async function ContactosPage() {
         ))}
       </div>
 
-      <div className="rounded-lg border border-line bg-card overflow-x-auto">
+      <div className="rounded-lg border border-line bg-card">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-line text-left text-xs text-muted">
+            <tr className="border-b border-line text-left text-xs text-muted uppercase tracking-wide">
               <th className="px-4 py-3">Nombre</th>
               <th className="px-4 py-3">Cargo</th>
               <th className="px-4 py-3">Empresa</th>
               <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">Estado</th>
-              <th className="px-4 py-3">Fecha email</th>
-              <th className="px-4 py-3">Asunto</th>
-              <th className="px-4 py-3">Notas</th>
-              <th className="px-4 py-3">LinkedIn</th>
+              <th className="px-4 py-3 text-right">Ficha</th>
             </tr>
           </thead>
           <tbody>
@@ -79,47 +76,36 @@ export default async function ContactosPage() {
                     key={c.id}
                     className={`border-b border-line border-l-2 ${borderColor} hover:bg-line/20 transition-colors`}
                   >
-                    <td className="px-4 py-3 font-medium text-white">{c.nombre}</td>
-                    <td className="px-4 py-3 text-muted">{c.cargo}</td>
-                    <td className="px-4 py-3 text-muted">{c.empresa}</td>
+                    <td className="px-4 py-3 font-medium text-white">
+                      <Link href={`/contactos/${c.id}`} className="hover:text-mint transition-colors">
+                        {c.nombre}
+                      </Link>
+                    </td>
+                    <td className="px-4 py-3 text-muted text-xs">{c.cargo}</td>
+                    <td className="px-4 py-3 text-muted text-xs">{c.empresa}</td>
                     <td className="px-4 py-3">
                       {c.email && c.email !== "—" ? (
                         <Link
                           href={`/contactos/${c.id}`}
-                          className="text-mint hover:underline text-sm font-mono"
-                          title="Abrir editor de email"
+                          className="text-mint hover:underline text-xs font-mono"
+                          title="Redactar email"
                         >
                           {c.email}
                         </Link>
                       ) : (
-                        <span className="text-muted/40">—</span>
+                        <span className="text-muted/40 text-xs">—</span>
                       )}
                     </td>
                     <td className="px-4 py-3">
                       <StatusBadge status={c.estadoContacto} />
                     </td>
-                    <td className="px-4 py-3 text-muted text-xs">
-                      {c.fechaEmailEnviado || "—"}
-                    </td>
-                    <td className="px-4 py-3 text-muted text-xs max-w-[180px] truncate">
-                      {c.asuntoEmail || "—"}
-                    </td>
-                    <td className="px-4 py-3 text-muted text-xs max-w-[180px] truncate">
-                      {c.notasSeguimiento || "—"}
-                    </td>
-                    <td className="px-4 py-3">
-                      {c.linkedin ? (
-                        <a
-                          href={c.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-mint hover:underline text-xs"
-                        >
-                          Ver →
-                        </a>
-                      ) : (
-                        <span className="text-muted/40">—</span>
-                      )}
+                    <td className="px-4 py-3 text-right">
+                      <Link
+                        href={`/contactos/${c.id}`}
+                        className="inline-flex items-center gap-1 text-xs bg-mint/10 hover:bg-mint/20 text-mint px-3 py-1 rounded-lg transition-colors border border-mint/20"
+                      >
+                        Ver ficha →
+                      </Link>
                     </td>
                   </tr>
                 );
