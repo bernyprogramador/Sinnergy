@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 48" fill="none">
+  <text font-family="Inter,Helvetica Neue,Arial,sans-serif" font-size="32" font-weight="700" fill="white" letter-spacing="-2">
+    <tspan x="0" y="36">ne</tspan>
+  </text>
+  <!-- diamond star (the x) -->
+  <g transform="translate(56, 24)">
+    <polygon points="0,-13 4,0 0,13 -4,0" fill="#2be8a4"/>
+    <polygon points="-13,0 0,-4 13,0 0,4" fill="#2be8a4"/>
+  </g>
+  <text font-family="Inter,Helvetica Neue,Arial,sans-serif" font-size="32" font-weight="700" fill="white" letter-spacing="-2">
+    <tspan x="70" y="36">e</tspan>
+  </text>
+</svg>
