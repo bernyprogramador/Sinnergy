@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -19,7 +18,8 @@ export default function Sidebar() {
     <aside className="flex w-56 shrink-0 flex-col border-r border-line bg-sidebar">
       <div className="px-5 pt-7 pb-5 border-b border-line">
         <div className="flex items-center">
-          <Image src="/logo.svg" alt="Nexe" width={90} height={30} priority />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.svg" alt="Nexe" width={90} height={30} />
         </div>
         <div className="mt-3 flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-mint" />
