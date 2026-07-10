@@ -29,6 +29,7 @@ export type Empresa = {
   web: string;
   linkedin: string;
   notas: string;
+  ubicacion: string;
 };
 
 export type Contacto = {
@@ -48,6 +49,8 @@ export type Contacto = {
   asuntoEmail: string;
   notasSeguimiento: string;
   borradorEmail: string;
+  ubicacion: string;
+  fechaSeguimiento: string;
 };
 
 export type Campana = {
@@ -139,6 +142,7 @@ export async function getEmpresas(): Promise<Empresa[]> {
       web: f["Web"] ?? "",
       linkedin: f["LinkedIn"] ?? f["Linkedin"] ?? "",
       notas: f["Notas"] ?? "",
+      ubicacion: f["Ubicación"] ?? f["Ubicacion"] ?? "",
     };
   });
 }
@@ -174,6 +178,8 @@ export async function getContactos(): Promise<Contacto[]> {
       asuntoEmail: f["Asunto email"] ?? "",
       notasSeguimiento: f["Notas seguimiento"] ?? "",
       borradorEmail: f["Borrador email"] ?? "",
+      ubicacion: f["Ubicación"] ?? f["Ubicacion"] ?? "",
+      fechaSeguimiento: f["Fecha seguimiento"] ?? "",
     };
   });
 }

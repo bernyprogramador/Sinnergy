@@ -19,7 +19,14 @@ export default function Sidebar() {
     <aside className="flex w-56 shrink-0 flex-col border-r border-line bg-sidebar">
       <div className="px-5 pt-7 pb-5 border-b border-line">
         <div className="flex items-center">
-          <img src="/logo-nexe.png" alt="Nexe Digital" width={110} height={36} style={{objectFit:"contain"}} />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://nexedigital.es/wp-content/uploads/2023/09/Branding-IA-80-e1776713900875.png"
+            alt="Nexe Digital"
+            width={120}
+            height={40}
+            style={{objectFit:"contain", filter:"brightness(0) invert(1)", maxWidth:"120px"}}
+          />
         </div>
         <div className="mt-3 flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-mint" />

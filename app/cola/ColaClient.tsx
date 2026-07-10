@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { Contacto } from "@/lib/airtable";
 
-type Estado = "idle" | "enviando" | "ok" | "error" | "rechazando";
+type Estado = "idle" | "enviando" | "ok" | "error" | "rechazando" | "seguimiento";
 
 export default function ColaClient({ contactos }: { contactos: Contacto[] }) {
   const [items, setItems] = useState(
@@ -13,6 +13,7 @@ export default function ColaClient({ contactos }: { contactos: Contacto[] }) {
       borrador: c.borradorEmail || "",
       estado: "idle" as Estado,
       msg: "",
+      fechaEnviado: c.fechaEmailEnviado || "",
     }))
   );
 
@@ -31,7 +32,8 @@ export default function ColaClient({ contactos }: { contactos: Contacto[] }) {
       });
       const data = await res.json();
       if (res.ok) {
-        setItems((prev) => prev.map((it, i) => i === idx ? { ...it, estado: "ok", msg: "✓ Email enviado" } : it));
+        const fechaHoy = new Date().toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "2-digit" });
+        setItems((prev) => prev.map((it, i) => i === idx ? { ...it, estado: "ok", msg: "✓ Email enviado", fechaEnviado: fechaHoy } : it));
       } else {
         setItems((prev) => prev.map((it, i) => i === idx ? { ...it, estado: "error", msg: data.error || "Error al enviar" } : it));
       }
@@ -40,11 +42,21 @@ export default function ColaClient({ contactos }: { contactos: Contacto[] }) {
     }
   }
 
+  async function marcarEstado(idx: number, nuevoEstado: string) {
+    const item = items[idx];
+    await fetch("/api/update-contacto", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contactoId: item.id, estado: nuevoEstado }),
+    });
+    setItems((prev) => prev.filter((_, i) => i !== idx));
+  }
+
   async function rechazar(idx: number) {
     const item = items[idx];
     setItems((prev) => prev.map((it, i) => i === idx ? { ...it, estado: "rechazando" } : it));
     try {
-      await fetch(`/api/update-contacto`, {
+      await fetch("/api/update-contacto", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ contactoId: item.id, estado: "No contactado" }),
@@ -53,6 +65,21 @@ export default function ColaClient({ contactos }: { contactos: Contacto[] }) {
     } catch {
       setItems((prev) => prev.map((it, i) => i === idx ? { ...it, estado: "idle", msg: "Error al rechazar" } : it));
     }
+  }
+
+  async function programarSeguimiento(idx: number) {
+    const item = items[idx];
+    // Seguimiento en 7 días
+    const fecha = new Date();
+    fecha.setDate(fecha.getDate() + 7);
+    const fechaISO = fecha.toISOString().split("T")[0];
+    setItems((prev) => prev.map((it, i) => i === idx ? { ...it, estado: "seguimiento" } : it));
+    await fetch("/api/update-contacto", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contactoId: item.id, fechaSeguimiento: fechaISO }),
+    });
+    setItems((prev) => prev.map((it, i) => i === idx ? { ...it, estado: "ok", msg: `📅 Seguimiento programado para ${fecha.toLocaleDateString("es-ES")}` } : it));
   }
 
   if (items.length === 0) {
@@ -71,26 +98,64 @@ export default function ColaClient({ contactos }: { contactos: Contacto[] }) {
         <div
           key={item.id}
           className={`rounded-xl border bg-card p-5 space-y-4 transition-all ${
-            item.estado === "ok" ? "border-mint/40 opacity-60" : "border-line"
+            item.estado === "ok" ? "border-mint/40" : "border-line"
           }`}
         >
-          {/* Cabecera contacto */}
+          {/* Cabecera */}
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-white font-semibold">{item.nombre}</p>
               <p className="text-muted text-xs mt-0.5">{item.cargo} · {item.empresa}</p>
               <p className="text-mint text-xs font-mono mt-0.5">{item.email}</p>
+              {item.fechaEnviado && (
+                <p className="text-muted text-xs mt-0.5">📅 Enviado: {item.fechaEnviado}</p>
+              )}
             </div>
             {item.estado === "ok" ? (
-              <span className="text-xs bg-mint/15 text-mint px-3 py-1 rounded-full font-medium">Enviado ✓</span>
+              <span className="text-xs bg-mint/15 text-mint px-3 py-1 rounded-full font-medium shrink-0">Enviado ✓</span>
             ) : (
-              <span className="text-xs bg-yellow-400/15 text-yellow-300 px-3 py-1 rounded-full font-medium">Pendiente</span>
+              <span className="text-xs bg-yellow-400/15 text-yellow-300 px-3 py-1 rounded-full font-medium shrink-0">Pendiente</span>
             )}
           </div>
 
+          {/* Después de enviar: opciones de seguimiento */}
+          {item.estado === "ok" && (
+            <div className="space-y-3 pt-1 border-t border-line">
+              <p className="text-xs text-muted">{item.msg}</p>
+              <p className="text-xs text-muted uppercase tracking-wider">¿Qué ha pasado?</p>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => marcarEstado(idx, "Respondió")}
+                  className="text-xs bg-mint/10 hover:bg-mint/20 text-mint border border-mint/20 px-3 py-1.5 rounded-lg transition-colors font-medium"
+                >
+                  ✉ Respondió
+                </button>
+                <button
+                  onClick={() => marcarEstado(idx, "Reunión acordada")}
+                  className="text-xs bg-blue-400/10 hover:bg-blue-400/20 text-blue-400 border border-blue-400/20 px-3 py-1.5 rounded-lg transition-colors font-medium"
+                >
+                  📅 Reunión acordada
+                </button>
+                <button
+                  onClick={() => programarSeguimiento(idx)}
+                  disabled={item.estado === "seguimiento"}
+                  className="text-xs bg-line hover:bg-line/80 text-muted border border-line px-3 py-1.5 rounded-lg transition-colors font-medium disabled:opacity-50"
+                >
+                  🔔 Recordatorio en 7 días
+                </button>
+                <button
+                  onClick={() => marcarEstado(idx, "No contactar")}
+                  className="text-xs bg-danger/10 hover:bg-danger/20 text-danger border border-danger/20 px-3 py-1.5 rounded-lg transition-colors font-medium"
+                >
+                  ✕ No contactar
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Editor (solo si no enviado) */}
           {item.estado !== "ok" && (
             <>
-              {/* Asunto */}
               <div>
                 <label className="text-xs text-muted uppercase tracking-wider block mb-1.5">Asunto</label>
                 <input
@@ -100,7 +165,6 @@ export default function ColaClient({ contactos }: { contactos: Contacto[] }) {
                 />
               </div>
 
-              {/* Borrador */}
               <div>
                 <label className="text-xs text-muted uppercase tracking-wider block mb-1.5">
                   Mensaje
@@ -115,12 +179,10 @@ export default function ColaClient({ contactos }: { contactos: Contacto[] }) {
                 />
               </div>
 
-              {/* Feedback */}
               {item.msg && (
                 <p className={`text-xs ${item.estado === "error" ? "text-danger" : "text-muted"}`}>{item.msg}</p>
               )}
 
-              {/* Acciones */}
               <div className="flex gap-3 pt-1">
                 <button
                   onClick={() => aprobarYEnviar(idx)}

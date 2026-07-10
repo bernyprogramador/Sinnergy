@@ -6,7 +6,14 @@ const CONTACTOS_TABLE = "tblAb0xCwJGxm7OQ8";
 
 export async function POST(req: NextRequest) {
   try {
-    const { contactoId, estado } = await req.json();
+    const body = await req.json();
+    const { contactoId, estado, fechaSeguimiento, noContactar } = body;
+
+    const fields: Record<string, unknown> = {};
+    if (estado) fields["Estado contacto"] = estado;
+    if (fechaSeguimiento) fields["Fecha seguimiento"] = fechaSeguimiento;
+    if (noContactar !== undefined) fields["No contactar"] = noContactar;
+
     const res = await fetch(
       `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${CONTACTOS_TABLE}/${contactoId}`,
       {
@@ -15,12 +22,12 @@ export async function POST(req: NextRequest) {
           Authorization: `Bearer ${AIRTABLE_API_KEY}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ fields: { "Estado contacto": estado } }),
+        body: JSON.stringify({ fields }),
       }
     );
     if (!res.ok) return NextResponse.json({ error: await res.text() }, { status: 500 });
     return NextResponse.json({ ok: true });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Error interno" }, { status: 500 });
   }
 }

@@ -5,6 +5,14 @@ import { useRouter } from "next/navigation";
 import type { Empresa, Contacto } from "@/lib/airtable";
 import StatusBadge from "@/components/StatusBadge";
 
+async function callUpdateEmpresa(empresaId: string, payload: Record<string, unknown>) {
+  return fetch("/api/update-empresa", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ empresaId, ...payload }),
+  });
+}
+
 const SECTOR_COLOR: Record<string, string> = {
   "Gestoría/Asesoría": "text-mint",
   "Inmobiliaria/Promotora": "text-warn",
@@ -23,7 +31,21 @@ export default function EmpresasClient({
   contactos: Contacto[];
 }) {
   const [selected, setSelected] = useState<Empresa | null>(null);
+  const [empresasList, setEmpresasList] = useState(empresas);
   const router = useRouter();
+
+  async function marcarNoContactar(e: Empresa) {
+    await callUpdateEmpresa(e.id, { estado: "No contactar" });
+    setEmpresasList((prev) => prev.map((emp) => emp.id === e.id ? { ...emp, estado: "No contactar" } : emp));
+    setSelected((prev) => prev?.id === e.id ? { ...prev, estado: "No contactar" } : prev);
+  }
+
+  async function eliminarEmpresa(e: Empresa) {
+    if (!confirm(`¿Eliminar "${e.nombre}"? Esta acción no se puede deshacer.`)) return;
+    await callUpdateEmpresa(e.id, { eliminar: true });
+    setEmpresasList((prev) => prev.filter((emp) => emp.id !== e.id));
+    setSelected(null);
+  }
 
   const contactosDeEmpresa = selected
     ? contactos.filter((c) => c.empresaId === selected.id)
@@ -43,7 +65,7 @@ export default function EmpresasClient({
             </tr>
           </thead>
           <tbody>
-            {empresas.map((e) => (
+            {empresasList.map((e) => (
               <tr
                 key={e.id}
                 onClick={() => setSelected(selected?.id === e.id ? null : e)}
@@ -142,6 +164,13 @@ export default function EmpresasClient({
             </div>
           )}
 
+          {selected.ubicacion && (
+            <div className="flex items-center gap-2 text-xs text-muted">
+              <span>📍</span>
+              <span>{selected.ubicacion}</span>
+            </div>
+          )}
+
           <div className="flex gap-2">
             {selected.web && (
               <a href={selected.web} target="_blank" rel="noopener noreferrer"
@@ -155,6 +184,22 @@ export default function EmpresasClient({
                 in LinkedIn
               </a>
             )}
+          </div>
+
+          <div className="flex gap-2 pt-1 border-t border-line">
+            <button
+              onClick={() => marcarNoContactar(selected)}
+              disabled={selected.estado === "No contactar"}
+              className="flex-1 text-xs bg-danger/10 hover:bg-danger/20 text-danger border border-danger/20 rounded-lg py-2 transition-colors disabled:opacity-40"
+            >
+              ✕ No contactar
+            </button>
+            <button
+              onClick={() => eliminarEmpresa(selected)}
+              className="flex-1 text-xs bg-line hover:bg-danger/20 text-muted hover:text-danger border border-line hover:border-danger/30 rounded-lg py-2 transition-colors"
+            >
+              🗑 Eliminar
+            </button>
           </div>
         </div>
       ) : (
