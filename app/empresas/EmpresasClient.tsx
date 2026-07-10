@@ -35,7 +35,7 @@ export default function EmpresasClient({
     : [];
 
   return (
-    <div className="flex gap-4 h-[calc(100vh-120px)]">
+    <div className="flex gap-4 min-h-[600px] overflow-x-auto">
       {/* Lista izquierda */}
       <div className="flex-1 overflow-y-auto rounded-xl border border-line bg-card">
         <table className="w-full text-sm">
@@ -189,26 +189,4 @@ export default function EmpresasClient({
                 🌐 Web
               </a>
             )}
-            {selected.linkedin && (
-              <a
-                href={selected.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 text-center text-xs bg-base border border-line text-muted hover:text-white hover:border-mint/30 rounded-lg py-2 transition-colors"
-              >
-                in LinkedIn
-              </a>
-            )}
-          </div>
-        </div>
-      ) : (
-        <div className="w-80 shrink-0 rounded-xl border border-line bg-card/50 flex items-center justify-center text-center p-8">
-          <div>
-            <p className="text-3xl mb-3">◈</p>
-            <p className="text-muted text-sm">Haz clic en una empresa para ver su ficha</p>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+          
