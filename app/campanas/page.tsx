@@ -1,4 +1,5 @@
 import { getCampanas } from "@/lib/airtable";
+import CampanasClient from "./CampanasClient";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -8,34 +9,20 @@ export default async function CampanasPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-ink">Campañas</h1>
-      <p className="text-sm text-muted">
-        Solo lectura — las campañas se gestionan desde n8n.
-        {campanas.length === 0 && " Aún no hay campañas creadas."}
-      </p>
+      <div className="flex items-end justify-between border-b border-line pb-5">
+        <div>
+          <p className="text-xs text-mint font-semibold tracking-[0.2em] uppercase mb-1">Campañas activas</p>
+          <h1 className="text-2xl font-bold text-white tracking-tight">Campañas</h1>
+          <p className="text-sm text-muted mt-1">
+            El briefing de cada campaña lo usa la IA para personalizar los emails.
+          </p>
+        </div>
+        <span className="text-xs text-muted bg-card border border-line rounded-full px-3 py-1.5">
+          {campanas.length} campaña{campanas.length !== 1 ? "s" : ""}
+        </span>
+      </div>
 
-      {campanas.length > 0 ? (
-        <div className="overflow-x-auto rounded-lg border border-line">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-thead text-xs font-semibold uppercase tracking-wide text-minttext">
-              <tr>
-                <th className="px-4 py-3">Campaña</th>
-              </tr>
-            </thead>
-            <tbody className="[&>tr:nth-child(even)]:bg-rowalt [&>tr:nth-child(odd)]:bg-card">
-              {campanas.map((c) => (
-                <tr key={c.id} className="hover:bg-line/40">
-                  <td className="px-4 py-3 font-medium text-ink">{c.nombre}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div className="rounded-lg border border-line bg-panel p-8 text-center text-muted">
-          Las campañas aparecerán aquí una vez que configures n8n y empieces a enviar.
-        </div>
-      )}
+      <CampanasClient campanas={campanas} />
     </div>
   );
 }

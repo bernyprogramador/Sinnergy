@@ -95,36 +95,42 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      {/* Pipeline visual */}
+      {/* Pipeline real */}
       <section className="rounded-2xl border border-line bg-card p-6">
         <div className="flex items-center justify-between mb-5">
           <p className="text-sm font-semibold text-white">Pipeline de captación</p>
-          <span className="text-xs text-muted">flujo activo</span>
+          <span className="text-xs text-muted">{resumen.totalContactos} contactos en total</span>
         </div>
-        <div className="flex items-stretch gap-0">
+        <div className="flex items-stretch gap-1">
           {[
-            { label: "Empresas", value: resumen.totalEmpresas, pct: 100, color: "bg-white/20" },
-            { label: "Contactos", value: resumen.totalContactos, pct: resumen.totalEmpresas > 0 ? Math.round((resumen.totalContactos/resumen.totalEmpresas)*100) : 0, color: "bg-white/30" },
-            { label: "Leads nuevos", value: resumen.leadsNuevos, pct: resumen.totalContactos > 0 ? Math.round((resumen.leadsNuevos/resumen.totalContactos)*100) : 0, color: "bg-mint/50" },
-            { label: "Validados", value: resumen.leadsValidados, pct: resumen.leadsNuevos > 0 ? Math.round((resumen.leadsValidados/resumen.leadsNuevos)*100) : 0, color: "bg-mint" },
-          ].map((stage, i) => (
-            <div key={stage.label} className="flex-1 relative">
-              {i > 0 && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-px z-10 text-muted text-xs">›</div>
-              )}
-              <div className={`mx-1 rounded-xl p-4 ${i >= 2 ? "bg-mint/8 border border-mint/20" : "bg-white/4 border border-white/8"}`}>
-                <p className="text-xs text-muted mb-1">{stage.label}</p>
-                <p className={`text-xl font-bold ${i >= 2 ? "text-mint" : "text-white"}`}>{stage.value}</p>
-                <div className="mt-2 h-1 bg-black/20 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full ${stage.color} transition-all`}
-                    style={{ width: `${Math.min(stage.pct, 100)}%` }}
-                  />
+            { label: "Sin contactar", value: resumen.pipeline.noContactado, color: "bg-white/15", text: "text-white/60", dot: "bg-white/30" },
+            { label: "En cola", value: resumen.pipeline.enCola, color: "bg-yellow-400/20", text: "text-yellow-300", dot: "bg-yellow-400" },
+            { label: "Email enviado", value: resumen.pipeline.emailEnviado, color: "bg-blue-400/15", text: "text-blue-400", dot: "bg-blue-400" },
+            { label: "Respondió", value: resumen.pipeline.respondio, color: "bg-mint/15", text: "text-mint", dot: "bg-mint" },
+            { label: "Reunión", value: resumen.pipeline.reunion, color: "bg-mint/30", text: "text-mint", dot: "bg-mint animate-pulse" },
+          ].map((stage, i, arr) => {
+            const pct = resumen.totalContactos > 0
+              ? Math.round((stage.value / resumen.totalContactos) * 100)
+              : 0;
+            return (
+              <div key={stage.label} className="flex-1 relative">
+                {i > 0 && (
+                  <div className="absolute -left-1 top-1/2 -translate-y-1/2 z-10 text-white/20 text-xs">›</div>
+                )}
+                <div className={`rounded-xl p-4 border border-white/5 ${stage.color} h-full`}>
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <span className={`h-1.5 w-1.5 rounded-full ${stage.dot}`} />
+                    <p className="text-xs text-muted">{stage.label}</p>
+                  </div>
+                  <p className={`text-2xl font-bold ${stage.text}`}>{stage.value}</p>
+                  <div className="mt-2 h-0.5 bg-white/10 rounded-full overflow-hidden">
+                    <div className={`h-full rounded-full ${stage.dot} opacity-60 transition-all`} style={{ width: `${pct}%` }} />
+                  </div>
+                  <p className="text-xs text-muted/50 mt-1">{pct}%</p>
                 </div>
-                <p className="text-xs text-muted mt-1">{stage.pct}%</p>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 

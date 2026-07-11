@@ -59,13 +59,17 @@ export default function EmpresasClient({
           <thead className="sticky top-0 bg-thead z-10">
             <tr className="border-b border-line text-left text-xs text-muted">
               <th className="px-4 py-3">Empresa</th>
-              <th className="px-4 py-3">Sector</th>
+              <th className="px-4 py-3">Persona de contacto</th>
+              <th className="px-4 py-3">Ubicación</th>
               <th className="px-4 py-3">Estado</th>
               <th className="px-4 py-3 text-right">Score</th>
             </tr>
           </thead>
           <tbody>
-            {empresasList.map((e) => (
+            {empresasList.map((e) => {
+              const contactosEmp = contactos.filter((c) => c.empresaId === e.id);
+              const principal = contactosEmp[0];
+              return (
               <tr
                 key={e.id}
                 onClick={() => setSelected(selected?.id === e.id ? null : e)}
@@ -75,9 +79,22 @@ export default function EmpresasClient({
                     : "hover:bg-line/30"
                 }`}
               >
-                <td className="px-4 py-3 font-medium text-white">{e.nombre}</td>
-                <td className={`px-4 py-3 text-xs ${SECTOR_COLOR[e.sector] ?? "text-muted"}`}>
-                  {e.sector}
+                <td className="px-4 py-3">
+                  <p className="font-medium text-white">{e.nombre}</p>
+                  <p className={`text-xs mt-0.5 ${SECTOR_COLOR[e.sector] ?? "text-muted"}`}>{e.sector}</p>
+                </td>
+                <td className="px-4 py-3">
+                  {principal ? (
+                    <div>
+                      <p className="text-white text-xs font-medium">{principal.nombre}</p>
+                      <p className="text-muted text-xs">{principal.cargo}</p>
+                    </div>
+                  ) : (
+                    <span className="text-muted text-xs">—</span>
+                  )}
+                </td>
+                <td className="px-4 py-3 text-xs text-muted">
+                  {e.ubicacion || (principal?.ubicacion) || "—"}
                 </td>
                 <td className="px-4 py-3">
                   <StatusBadge status={e.estado} />
@@ -88,7 +105,8 @@ export default function EmpresasClient({
                   </span>
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>

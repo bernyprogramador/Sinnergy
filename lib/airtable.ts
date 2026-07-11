@@ -56,6 +56,9 @@ export type Contacto = {
 export type Campana = {
   id: string;
   nombre: string;
+  briefing: string;
+  estado: string;
+  sector: string;
 };
 
 export type ColaMensaje = {
@@ -211,6 +214,9 @@ export async function getCampanas(): Promise<Campana[]> {
   return records.map((r: any) => ({
     id: r.id,
     nombre: r.fields?.["Nombre"] ?? "—",
+    briefing: r.fields?.["Briefing campaña"] ?? "",
+    estado: sel(r.fields?.["Estado campaña"]),
+    sector: sel(r.fields?.["Sector objetivo"]),
   }));
 }
 
@@ -236,10 +242,21 @@ export async function getResumen() {
     getContactos(),
   ]);
 
+  const byEstado = (estado: string) =>
+    contactos.filter((c) => c.estadoContacto === estado).length;
+
   return {
     totalEmpresas: empresas.length,
     totalContactos: contactos.length,
     leadsNuevos: empresas.filter((e) => e.estado === "Nueva").length,
     leadsValidados: empresas.filter((e) => e.estado === "Validada").length,
+    // Pipeline real por estado
+    pipeline: {
+      noContactado: byEstado("No contactado"),
+      enCola: byEstado("En cola"),
+      emailEnviado: byEstado("Email enviado"),
+      respondio: byEstado("Respondió") + byEstado("Respondido"),
+      reunion: byEstado("Reunión acordada") + byEstado("Reunion agendada"),
+    },
   };
 }
